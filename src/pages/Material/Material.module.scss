@@ -1,0 +1,53 @@
+.material {
+  padding: 24px;
+  
+  &__title {
+    font-weight: 600;
+    font-size: 42px;
+    text-align: center;
+  }
+
+  &__block {
+    position: relative;
+    height: calc(100vh - 180px);
+    overflow-y: auto;
+    margin: 24px auto;
+    max-width: 1024px;
+    padding: 24px 0;
+  }
+
+  &__image {
+    display: block;
+    max-width: 80%;
+    margin: 16px auto;
+  }
+
+  &__image_description {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  &__list {
+    width: 100%;
+    list-style-image: '-';
+  }
+  &__list_item {
+    width: 100%;
+  }
+}
+
+.paragraph {
+  font-size: 18px;
+  text-align: justify;
+
+  &_margin {
+    font-size: 18px;
+    text-align: justify;
+    margin-top: 16px;
+  }
+
+  &__tab {
+    display: inline-block;
+    margin-left: 48px;
+  }
+}

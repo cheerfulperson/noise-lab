@@ -1,0 +1,44 @@
+@use '../../index.scss' as global;
+
+.maket {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  height: calc(100vh - global.$header-height - 2px);
+
+  &__title {
+    font-size: 48px;
+  }
+
+  &__wrapper_middle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__button_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 250px;
+    gap: 10px;
+  }
+
+  &__button {
+    width: 100%;
+  }
+
+  &__image_signal {
+    max-width: 480px;
+    user-select: none;
+  }
+
+  &__modal_output {
+    width: 95% !important;
+    max-width: 1400px;
+    min-width: 1000px;
+    height: 700px !important;
+  }
+
+}

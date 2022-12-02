@@ -1,0 +1,53 @@
+.signal_settings {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  min-height: 0;
+
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+    font-weight: 500;
+    margin: 12px auto;
+    width: fit-content;
+  }
+
+  &__chart_block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 20px;
+  }
+
+  &__chart {
+    margin-top: 32px;
+    width: 60%;
+
+    &:first-child {
+      margin-top: 0px;
+    }
+  }
+
+  &__chart_title {
+    width: 100%;
+    font-size: 14px;
+    color: #4c4c4c;
+    text-align: center;
+    margin: 8px 0 4px;
+  }
+
+  &__chart_subtitle {
+    width: 100%;
+    font-size: 12px;
+    color: gray;
+    text-align: center;
+  }
+}

@@ -1,0 +1,15 @@
+.conclude {
+  padding: 24px;
+  max-width: 680px;
+  margin: auto;
+
+  &__title {
+    font-weight: 600;
+    font-size: 42px;
+    text-align: center;
+  }
+
+  &__list {
+    width: 100%;
+  }
+}
