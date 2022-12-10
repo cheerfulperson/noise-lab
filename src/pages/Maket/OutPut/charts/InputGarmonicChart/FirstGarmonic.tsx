@@ -62,6 +62,11 @@ export const FirstGarmonic = ({
       title: {
         display: true,
         text: "Первая гармоника с амплитудой = 3 · A",
+        font: {
+          size() {
+            return 24;
+          },
+        },
       },
     },
   }} data={dataSignal} />;

@@ -19,6 +19,7 @@ import {
   getImpulsOutput,
   getPeriodOutput,
 } from "../../modules";
+import { getCoff } from "../../utils/filter";
 
 export type TSignalType = "analog" | "digital";
 export type TNoiseType = "impuls" | "fluct" | "period";
@@ -35,6 +36,7 @@ export interface IUseMaketResults extends IMaketState {
     digital: ISignalCoords;
     noise: ISignalCoords;
     output: ISignalCoords;
+    filter: ISignalCoords;
   };
 }
 
@@ -112,7 +114,7 @@ export const initialMaketValues: IMaketState = {
   pointsAmount: {
     analog: 1000,
     digital: 200,
-    noise: 150,
+    noise: 130,
   },
   signal: {
     type: "analog",
@@ -161,7 +163,7 @@ export const MaketProvider = ({
       ...prev,
       brightness,
     }));
-  }
+  };
 
   const analogCoords = useMemo<IAnalogSignalData>(
     () =>
@@ -222,6 +224,44 @@ export const MaketProvider = ({
     }
   }, [state]);
 
+  const filterCoords = useMemo(() => {
+    const k = getCoff(state.signal.type, state.signal.ampl, state.noise.maxN);
+    const noiseData = {
+      ...state.noise,
+      maxN: state.noise.maxN * k,
+      minA: state.noise.minA * k,
+    };
+    const settings = {
+      amountPoints:
+        state.signal.type === "analog"
+          ? state.pointsAmount.analog
+          : state.pointsAmount.digital,
+      noise: noiseData,
+      signal: state.signal,
+      signalType: state.signal.type,
+    };
+
+    if (k === 1) {
+      return getDigitalSignal({
+        amountPoints: state.pointsAmount.digital,
+        ...state.signal,
+        ampl: 0,
+      })
+    }
+
+    if (state.noise.type === "fluct") {
+      return getFluctuationOutput(settings);
+    }
+
+    if (state.noise.type === "impuls") {
+      return getImpulsOutput(settings);
+    }
+
+    if (state.noise.type === "period") {
+      return getPeriodOutput(settings);
+    }
+  }, [state]);
+
   const cartContextValue: IUseMaketResults = {
     ...state,
     setNoise,
@@ -232,6 +272,7 @@ export const MaketProvider = ({
       digital: digitalCoords,
       noise: noiseCoords,
       output: outputCoords,
+      filter: filterCoords,
     },
   };
 

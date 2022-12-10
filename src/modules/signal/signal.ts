@@ -23,7 +23,7 @@ const getSignalPoint = (t: number): number =>
   3 * sin(t) + 2 * sin(3 * t) + 0.5 * sin(5 * t);
 
 const getDigitalPoint = (t: number): number =>
-  sin((t / 90) * PI) > 0 ? 0.1 : 1;
+  sin((t / 90) * PI) > 0 ? 0 : 1;
 
 export const getAnalogSignal = ({
   amountPoints,

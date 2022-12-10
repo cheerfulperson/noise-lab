@@ -7,9 +7,8 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "make": "electron-forge make --skip-package",
     "publish": "electron-forge publish",
-    "start:react": "react-scripts start",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "keywords": [
@@ -45,6 +44,8 @@
     "fork-ts-checker-webpack-plugin": "^7.2.13",
     "node-loader": "^2.0.0",
     "react-scripts": "^5.0.1",
+    "sass": "^1.56.2",
+    "sass-loader": "^13.2.0",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",

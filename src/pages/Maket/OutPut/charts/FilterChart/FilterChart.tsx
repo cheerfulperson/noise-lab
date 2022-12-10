@@ -8,7 +8,7 @@ interface IDigitalInputChartProps {
   signalCoords: ISignalCoords;
 }
 
-export const DigitalInputChart = ({
+export const FilterChart = ({
   signalCoords,
 }: IDigitalInputChartProps): ReactElement => {
   const dataSignal = {
@@ -17,8 +17,8 @@ export const DigitalInputChart = ({
       {
         label: "Напряжение",
         data: signalCoords.y,
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        borderColor: "rgb(255, 79, 132)",
+        backgroundColor: "rgba(255, 79, 132, 0.5)",
       },
     ],
   };
@@ -64,7 +64,7 @@ export const DigitalInputChart = ({
           },
           title: {
             display: true,
-            text: "Полезный сигнал",
+            text: "Сигнал после действия фильтра",
             font: {
               size() {
                 return 24;

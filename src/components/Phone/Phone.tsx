@@ -9,6 +9,7 @@ import {
   useMaketContext,
 } from "../../context/maket/useMaket";
 import { Image } from "../Image";
+import { getCoff } from "../../utils/filter";
 import styles from "./Phone.module.scss";
 
 interface IPhoneProps {
@@ -37,9 +38,10 @@ export const Phone = ({
     chartsData: ISignalCoords,
     ampl: number
   ): number => {
+    const k = getCoff(signal.type, signal.ampl, noise.maxN);
     switch (type) {
       case "fluct":
-        return Math.max(...chartsData.y) * 1.5;
+        return Math.max(...(chartsData.y.map((el) => el * k))) * 1.5;
       case "impuls":
         return ampl;
       case "period":
@@ -51,11 +53,13 @@ export const Phone = ({
     chartsData: ISignalCoords,
     ampl: number
   ): number => {
+    const k = getCoff(signal.type, signal.ampl, noise.maxN);
     const { abs } = Math;
     switch (type) {
       case "fluct":
         return (
-          chartsData.y.reduce((a, b) => abs(a) + abs(b)) / chartsData.y.length
+          chartsData.y.reduce((a, b) => abs(a * k) + abs(b * k)) /
+          chartsData.y.length
         );
       case "impuls":
         return ampl;
@@ -63,30 +67,37 @@ export const Phone = ({
         return ampl / 2;
     }
   };
+
   const COEFFICIENT = useMemo(() => {
+    const k = getCoff(signal.type, signal.ampl, noise.maxN);
+    const noiseData = {
+      ...noise,
+      maxN: noise.maxN * k,
+      minA: noise.minA * k,
+    };
     const maxSignal = signal.ampl;
     const maxNoise = getMaxAnalogNoise(
       noise.type,
       chartsData.noise,
-      (noise.maxN + noise.minA) / 2
+      (noiseData.maxN + noiseData.minA) / 2
     );
     const delta = maxSignal / maxNoise;
     const results = Math.round(Math.log(delta) * -20 + 16) / 100;
     return results;
-  }, [
-    chartsData.noise.y,
-    chartsData.analog.y,
-    chartsData.digital.y,
-    noise.type,
-    signal.ampl,
-  ]);
+  }, [chartsData, noise, signal]);
 
   const digitalCoff = useMemo<boolean>(() => {
+    const k = getCoff(signal.type, signal.ampl, noise.maxN);
+    const noiseData = {
+      ...noise,
+      maxN: noise.maxN * k,
+      minA: noise.minA * k,
+    };
     const signalAmpl = signal.ampl / 2;
     const noiseAmpl = getMaxDigNoise(
       noise.type,
       chartsData.noise,
-      (noise.maxN + noise.minA) / 2
+      (noiseData.maxN + noiseData.minA) / 2
     );
 
     return noiseAmpl < signalAmpl;
@@ -142,9 +153,7 @@ export const Phone = ({
                           styles={{
                             filter: `blur(${COEFFICIENT * 10}px) contrast(${
                               COEFFICIENT * 20 < 1 ? 1 : expK * 20
-                            }) brightness(${
-                              1 - COEFFICIENT < 0.05 ? 0 : 1 - expK
-                            })`,
+                            }) brightness(${1 - expK})`,
                           }}
                         />
                         <div ref={ref} className={styles.phone__noise}>
@@ -179,6 +188,9 @@ export const Phone = ({
                           <Image
                             className={styles.phone__impuls_image}
                             styles={{
+                              filter: `contrast(${
+                                COEFFICIENT * 20 < 1 ? 1 : expK * 10
+                              })`,
                               opacity: COEFFICIENT < 0.01 ? 0 : expImpl,
                             }}
                             imageType="impulsNoise"

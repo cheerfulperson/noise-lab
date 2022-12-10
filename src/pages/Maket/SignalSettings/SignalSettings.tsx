@@ -89,7 +89,7 @@ export const SignalSettings = ({
       </h2>
       <form
         className={styles.signal_settings__image_choose}
-        onSubmit={handleSubmit(submit, console.log)}
+        onSubmit={handleSubmit(submit)}
       >
         <h3 className={styles.signal_settings__pretitle}>Выбор изображения</h3>
         <div className={styles.signal_settings__images}>
@@ -112,7 +112,7 @@ export const SignalSettings = ({
                   ].join(" ")}
                 />
                 <p className={styles.signal_settings__image_text}>
-                  изображение
+                  {image === "image3" ? "видео" : "изображение"}
                 </p>
               </div>
             );
@@ -168,9 +168,9 @@ export const SignalSettings = ({
             </p>
           )}
         </div>
-          <div className={styles.signal_settings__input_block}>
-            Частота сигнала 800 МГц
-            {/* <TextField
+        <div className={styles.signal_settings__input_block}>
+          Частота сигнала 800 МГц
+          {/* <TextField
               id="signal_settings_gz"
               label="Частота"
               variant="outlined"
@@ -178,13 +178,13 @@ export const SignalSettings = ({
               className={styles.signal_settings__input}
               {...register("frequency")}
             /> */}
-            {/* <span className={styles.signal_settings__input_info}></span> */}
-          </div>
-          {formState.errors.frequency && (
-            <p className={styles.signal_settings__error}>
-              {formState.errors.frequency.message}
-            </p>
-          )}
+          {/* <span className={styles.signal_settings__input_info}></span> */}
+        </div>
+        {formState.errors.frequency && (
+          <p className={styles.signal_settings__error}>
+            {formState.errors.frequency.message}
+          </p>
+        )}
         <div className={styles.signal_settings__buttons}>
           <Button
             variant="contained"

@@ -5,6 +5,7 @@ import { ReactElement, useState } from "react";
 import styles from "./OutPut.module.scss";
 import {
   DigitalInputChart,
+  FilterChart,
   Garmonics,
   InputChart,
   NoiseChart,
@@ -56,6 +57,9 @@ export const OutPut = (): ReactElement => {
               <div className={styles.signal_settings__chart}>
                 <OutputChart signalCoords={chartsData.output} />
               </div>
+              <div className={styles.signal_settings__chart}>
+                <FilterChart signalCoords={chartsData.filter} />
+              </div>
             </div>
           )}
           {isGarmonicOpen && (
@@ -83,6 +87,9 @@ export const OutPut = (): ReactElement => {
           </div>
           <div className={styles.signal_settings__chart}>
             <OutputChart signalCoords={chartsData.output} />
+          </div>
+          <div className={styles.signal_settings__chart}>
+            <FilterChart signalCoords={chartsData.filter} />
           </div>
         </div>
       )}

@@ -65,6 +65,11 @@ export const SeconedGarmonic = ({
           title: {
             display: true,
             text: "Третья гармоника с амплитудой = 2 · A",
+            font: {
+              size() {
+                return 24;
+              },
+            },
           },
         },
       }}
