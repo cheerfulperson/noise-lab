@@ -15,22 +15,8 @@ import info3 from "../../assets/images/info3.png";
 import info4 from "../../assets/images/info4.png";
 import info5 from "../../assets/images/info5.png";
 import info6 from "../../assets/images/info6.png";
-import image001 from "../../assets/materialImages/image001.jpg";
-import image002 from "../../assets/materialImages/image002.jpg";
-import image003 from "../../assets/materialImages/image003.jpg";
-import image004 from "../../assets/materialImages/image004.jpg";
-import image005 from "../../assets/materialImages/image005.png";
-import image006 from "../../assets/materialImages/image006.gif";
-import image007 from "../../assets/materialImages/image007.gif";
-import image008 from "../../assets/materialImages/image008.gif";
-import image009 from "../../assets/materialImages/image009.png";
-import image0010 from "../../assets/materialImages/image0010.png";
-import image0011 from "../../assets/materialImages/image0011.gif";
-import image0012 from "../../assets/materialImages/image0012.gif";
-import image0013 from "../../assets/materialImages/image0013.gif";
-import image0014 from "../../assets/materialImages/image0014.gif";
-import image0015 from "../../assets/materialImages/image0015.gif";
-import image0016 from "../../assets/materialImages/image0016.png";
+import info7 from "../../assets/images/info7.png";
+import info8 from "../../assets/images/info9.png";
 import stopPeriodNoise from '../../assets/images/periodNoise.png';
 
 export type TImageType =
@@ -50,22 +36,8 @@ export type TImageType =
   | "info4"
   | "info5"
   | "info6"
-  | "image001"
-  | "image002"
-  | "image003"
-  | "image004"
-  | "image005"
-  | "image006"
-  | "image007"
-  | "image008"
-  | "image009"
-  | "image0010"
-  | "image0011"
-  | "image0012"
-  | "image0013"
-  | "image0014"
-  | "image0015"
-  | "image0016";
+  | "info7"
+  | "info8";
 
 interface IImageProps {
   imageType: TImageType;
@@ -91,22 +63,8 @@ const images: Record<TImageType, string> = {
   info4,
   info5,
   info6,
-  image001,
-  image002,
-  image003,
-  image004,
-  image005,
-  image006,
-  image007,
-  image008,
-  image009,
-  image0010,
-  image0011,
-  image0012,
-  image0013,
-  image0014,
-  image0015,
-  image0016,
+  info7,
+  info8,
 };
 
 export const Image = ({

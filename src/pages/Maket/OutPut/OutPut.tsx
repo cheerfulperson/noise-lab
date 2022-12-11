@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { ReactElement, useState } from "react";
 
@@ -39,9 +39,7 @@ export const OutPut = (): ReactElement => {
                   </Button>
                   <h2 className={styles.signal_settings__chart_title}>
                     U(t) = A · (3 · sin(t) + 2 · sin(3t) + 0.5 · sin(5t)).{" "}
-                    <Link to={"/material#signal-model-material"}>
-                      Узнать больше!!!
-                    </Link>
+                    <Link to={"/material"}>(См. теор. материал стр. 9).</Link>
                   </h2>
                   <p className={styles.signal_settings__chart_subtitle}>
                     Где A - амплитуда, которую вы задаете, t - промежуток
@@ -86,6 +84,18 @@ export const OutPut = (): ReactElement => {
             <NoiseChart signalCoords={chartsData.noise} />
           </div>
           <div className={styles.signal_settings__chart}>
+            <Alert severity="info">
+              Незакрашенная зона между 1 и 0 это неопределенное состояние! В
+              пределах "неопределённого" диапазона для любого входа логического
+              элемента, будет иметься точка разделения актуального сигнала
+              низкого уровня от диапазона действительного входного сигнала
+              высокого уровня. То есть, где-то между наименьшим напряжением
+              сигнала высокого логического уровня и наибольшим напряжением
+              сигнала низкого логического уровня гарантированного
+              производителем, существует порог напряжения, при котором
+              логическая схема будет менять интерпретацию сигнала с высокого на
+              низкий и наоборот.
+            </Alert>
             <OutputChart signalCoords={chartsData.output} />
           </div>
           <div className={styles.signal_settings__chart}>

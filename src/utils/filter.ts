@@ -8,5 +8,8 @@ export const getCoff = (
   if (signalT === "digital") {
     return ampl - noise * 0.75 > 0 ? 0.2 : 1;
   }
+  if (signalT === "analog" && noise / ampl < 0.2) {
+    return 0.1;
+  }
   return 0.5;
 };

@@ -3,15 +3,15 @@ import type { ModuleOptions } from "webpack";
 export const rules: Required<ModuleOptions>["rules"] = [
   {
     test: /native_modules[/\\].+\.node$/,
-    use: 'node-loader',
+    use: "node-loader",
   },
   {
     test: /[/\\]node_modules[/\\].+\.(m?js|node)$/,
     parser: { amd: false },
     use: {
-      loader: '@vercel/webpack-asset-relocator-loader',
+      loader: "@vercel/webpack-asset-relocator-loader",
       options: {
-        outputAssetBase: 'native_modules',
+        outputAssetBase: "native_modules",
       },
     },
   },
@@ -30,10 +30,13 @@ export const rules: Required<ModuleOptions>["rules"] = [
     use: ["style-loader", "css-loader", "sass-loader"],
   },
   {
-    test: /\.(png|jpe?g|gif)$/i,
+    test: /\.(png|jpe?g|gif|pdf)$/i,
     use: [
       {
         loader: "file-loader",
+        options: {
+          name: "[name].[ext]",
+        },
       },
     ],
   },

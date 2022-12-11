@@ -9,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from "chart.js";
 import { createRoot } from "react-dom/client";
 import { HashRouter } from "react-router-dom";
@@ -24,6 +25,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Title,
+  Filler,
   Tooltip,
   Legend
 );
