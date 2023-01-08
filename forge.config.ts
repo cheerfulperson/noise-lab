@@ -5,13 +5,19 @@ import { mainConfig } from "./webpack.main.config";
 // eslint-disable-next-line import/namespace
 import { rendererConfig } from "./webpack.renderer.config";
 import MakerSquirrel from "@electron-forge/maker-squirrel";
+import ZipMaker from "@electron-forge/maker-zip";
 
 const config: ForgeConfig = {
   packagerConfig: {
     icon: "./public/assets/icon.png",
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel()],
+  makers: [
+    new MakerSquirrel({
+      noMsi: false,
+    }),
+    // new ZipMaker({}),
+  ],
   plugins: [
     new WebpackPlugin({
       mainConfig,

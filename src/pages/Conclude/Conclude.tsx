@@ -8,12 +8,12 @@ import styles from "./Conclude.module.scss";
 export const Conclude = (): ReactElement => {
   return (
     <div className={styles.conclude}>
-      <h2 className={styles.conclude__title}>Содержание отчета</h2>
+      <h2 className={styles.conclude__title}>Рекомендации к содержанию отчета</h2>
       <List className={styles.conclude__list}>
         {[
           "Цель работы.",
-          "Результаты расчетов.",
           "Результаты исследований (данные измерений, графики, пояснение результатов измерений и расчетов, выводы).",
+          "Пояснить результаты расчетов.",
           "Вывод по выполенной работе.",
         ].map((value, i) => (
           <ListItem key={value}>

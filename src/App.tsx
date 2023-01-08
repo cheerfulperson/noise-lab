@@ -40,6 +40,11 @@ const App = (): ReactElement => {
 };
 
 const container = document.getElementById("root");
+
+if (!container) {
+  throw new Error('Please provide root');
+}
+
 const root = createRoot(container);
 
 function render() {

@@ -3,6 +3,7 @@ import { Line } from "react-chartjs-2";
 
 // eslint-disable-next-line import/no-unresolved
 import { IAnalogSignalData } from "../../../../../modules/signal/signal";
+import { tooltip } from "../InputChart";
 
 interface IThirdGarmonicProps {
   signalCoords: IAnalogSignalData;
@@ -27,6 +28,9 @@ export const ThirdGarmonic = ({
     <Line
       options={{
         responsive: true,
+        interaction: {
+          intersect: false
+        },
         elements: {
           point: {
             radius: 0,
@@ -59,12 +63,13 @@ export const ThirdGarmonic = ({
           },
         },
         plugins: {
+          tooltip: tooltip,
           legend: {
             position: "center" as const,
           },
           title: {
             display: true,
-            text: "Пятая гармоника с амплитудой = 0.5 · A",
+            text: "Третья гармоника",
             font: {
               size() {
                 return 24;

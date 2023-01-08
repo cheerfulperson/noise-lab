@@ -8,6 +8,7 @@ interface IModalProps {
   className?: string;
   children: ReactNode;
   open?: boolean;
+  hideClose?: boolean;
   onClose?: () => void;
 }
 
@@ -15,13 +16,16 @@ export const Modal = ({
   children,
   className,
   onClose,
+  hideClose,
   open = false,
 }: IModalProps): ReactElement => {
-  const handleClose = (e: ReactMouseEvent<HTMLDivElement, MouseEvent>): void => {
-    if (e.target === e.currentTarget) {
+  const handleClose = (
+    e: ReactMouseEvent<HTMLDivElement, MouseEvent>
+  ): void => {
+    if (e.target === e.currentTarget && onClose) {
       onClose();
     }
-  }
+  };
 
   return (
     <div
@@ -29,9 +33,16 @@ export const Modal = ({
       onClick={handleClose}
     >
       <div className={[styles.modal, className].join(" ")}>
-        <Button variant="contained" className={styles.modal__close_btn} onClick={onClose}>
-          <Close />
-        </Button>
+        {!hideClose && (
+          <Button
+            variant="contained"
+            className={styles.modal__close_btn}
+            onClick={onClose}
+          >
+            <Close />
+          </Button>
+        )}
+
         {children}
       </div>
     </div>

@@ -20,10 +20,22 @@ interface ISignalProps {
 const getGarmonicPoint = (ampl: number, t: number): number => ampl * sin(t);
 
 const getSignalPoint = (t: number): number =>
-  3 * sin(t) + 2 * sin(3 * t) + 0.5 * sin(5 * t);
+  (sin(t) + sin(2 * t) + sin(3 * t)) / 2.5;
 
-const getDigitalPoint = (t: number): number =>
-  sin((t / 90) * PI) > 0 ? 0 : 1;
+const getDigitalPoint = (t: number): number => {
+  const value = sin((t / 90) * PI);
+
+  if ((value > 0 && value < 0.5) || (value < 0 && value > -0.5)) {
+    return 0;
+  }
+  if (value >= 0.5 && value <= 1) {
+    return 1;
+  }
+  if (value <= -0.5 && value >= -1) {
+    return 0.25;
+  }
+  return 0;
+};
 
 export const getAnalogSignal = ({
   amountPoints,
@@ -37,15 +49,15 @@ export const getAnalogSignal = ({
     x: x.map((value) => Number((value / frequency).toFixed(3))),
     y: x.map((value) => getSignalPoint(value / delta) * ampl),
     firstGarmonic: {
-      y: x.map((value) => getGarmonicPoint(ampl * 3, value / delta)),
+      y: x.map((value) => getGarmonicPoint(ampl, value / delta)),
       x: [],
     },
     seconedGarmonic: {
-      y: x.map((value) => getGarmonicPoint(ampl * 2, (3 * value) / delta)),
+      y: x.map((value) => getGarmonicPoint(ampl * 0.5, (2 * value) / delta)),
       x: [],
     },
     thirdGarmonic: {
-      y: x.map((value) => getGarmonicPoint(ampl * 0.5, (5 * value) / delta)),
+      y: x.map((value) => getGarmonicPoint(ampl * 0.33, (3 * value) / delta)),
       x: [],
     },
   };

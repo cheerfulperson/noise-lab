@@ -3,6 +3,7 @@ import { Line } from "react-chartjs-2";
 
 // eslint-disable-next-line import/no-unresolved
 import { ISignalCoords } from "../../../../../modules/signal/signal";
+import { tooltip } from "../InputChart";
 
 interface INoiseChartProps {
   signalCoords: ISignalCoords;
@@ -27,6 +28,9 @@ export const NoiseChart = ({
     <Line
       options={{
         responsive: true,
+        interaction: {
+          intersect: false
+        },
         elements: {
           point: {
             radius: 0,
@@ -59,6 +63,7 @@ export const NoiseChart = ({
           },
         },
         plugins: {
+          tooltip: tooltip,
           legend: {
             position: "center" as const,
           },

@@ -1,3 +1,5 @@
+import { TooltipOptions } from "chart.js";
+import { _DeepPartialObject } from "chart.js/types/utils";
 import { ReactElement } from "react";
 import { Line } from "react-chartjs-2";
 
@@ -7,6 +9,23 @@ import { IAnalogSignalData } from "../../../../../modules/signal/signal";
 interface IInputChartProps {
   signalCoords: IAnalogSignalData;
 }
+
+export const tooltip: _DeepPartialObject<TooltipOptions<"line">> =  {
+  callbacks: {
+    title(data) {
+      return `Временная точка: ${data[0].label} мкс`;
+    },
+    label() {
+      return "";
+    },
+    footer(tooltipItems) {
+      return `Напряжение в точке: ${tooltipItems[0].formattedValue.replace(
+        ",",
+        "."
+      )} В`;
+    },
+  },
+};
 
 export const InputChart = ({
   signalCoords,
@@ -27,6 +46,10 @@ export const InputChart = ({
     <Line
       options={{
         responsive: true,
+        maintainAspectRatio: true,
+        interaction: {
+          intersect: false
+        },
         elements: {
           point: {
             radius: 0,
@@ -62,6 +85,7 @@ export const InputChart = ({
           legend: {
             position: "center" as const,
           },
+          tooltip,
         },
       }}
       data={dataSignal}

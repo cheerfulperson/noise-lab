@@ -113,7 +113,7 @@ export const initialMaketValues: IMaketState = {
   brightness: 50,
   pointsAmount: {
     analog: 1000,
-    digital: 200,
+    digital: 500,
     noise: 130,
   },
   signal: {
@@ -196,10 +196,8 @@ export const MaketProvider = ({
       return getImpulsNoise(settings);
     }
 
-    if (state.noise.type === "period") {
-      return getPeriodsNoise(settings);
-    }
-  }, [state.noise, state.pointsAmount.noise, state.noise.type]);
+    return getPeriodsNoise(settings);
+  }, [state]);
 
   const outputCoords = useMemo(() => {
     const settings = {
@@ -219,9 +217,7 @@ export const MaketProvider = ({
       return getImpulsOutput(settings);
     }
 
-    if (state.noise.type === "period") {
-      return getPeriodOutput(settings);
-    }
+    return getPeriodOutput(settings);
   }, [state]);
 
   const filterCoords = useMemo(() => {
@@ -231,6 +227,11 @@ export const MaketProvider = ({
       maxN: state.noise.maxN * k,
       minA: state.noise.minA * k,
     };
+    if (k !== 1 && state.signal.type === "digital") {
+      noiseData.maxN = 0;
+      noiseData.minA = 0;
+    }
+
     const settings = {
       amountPoints:
         state.signal.type === "analog"
@@ -246,7 +247,7 @@ export const MaketProvider = ({
         amountPoints: state.pointsAmount.digital,
         ...state.signal,
         ampl: 0,
-      })
+      });
     }
 
     if (state.noise.type === "fluct") {
@@ -257,9 +258,7 @@ export const MaketProvider = ({
       return getImpulsOutput(settings);
     }
 
-    if (state.noise.type === "period") {
-      return getPeriodOutput(settings);
-    }
+    return getPeriodOutput(settings);
   }, [state]);
 
   const cartContextValue: IUseMaketResults = {

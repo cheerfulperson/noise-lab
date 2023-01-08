@@ -1,5 +1,23 @@
 $phone-radius: 20px 20px 0px 0px;
 
+@keyframes anim {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .phone {
   position: relative;
   max-width: 320px;
@@ -116,6 +134,7 @@ $phone-radius: 20px 20px 0px 0px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     position: absolute;
     border-radius: $phone-radius;
     top: 0;
@@ -128,5 +147,24 @@ $phone-radius: 20px 20px 0px 0px;
       font-size: 24px;
       text-align: center;
     }
+    &_pretext {
+      color: white;
+      font-size: 16px;
+      margin-top: 12px;
+      padding: 0 8px;
+      text-align: center;
+    }
+  }
+  &__screen_image_animate {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    object-fit: cover;
+    border-radius: $phone-radius;
+    height: 100%;
+    animation: anim 50ms infinite;
   }
 }
+
+

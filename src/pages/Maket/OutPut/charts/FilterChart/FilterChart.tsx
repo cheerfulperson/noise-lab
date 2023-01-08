@@ -5,6 +5,7 @@ import { Line } from "react-chartjs-2";
 // eslint-disable-next-line import/no-unresolved
 import { useMaketContext } from "../../../../../context";
 import { ISignalCoords } from "../../../../../modules/signal/signal";
+import { tooltip } from "../InputChart";
 
 interface IDigitalInputChartProps {
   signalCoords: ISignalCoords;
@@ -18,35 +19,35 @@ export const FilterChart = ({
   const datasets = useMemo(() => {
     if (signal.type === "digital") {
       const logZero = signal.ampl * 0.4;
-      const max = signal.ampl + logZero;
-      const min = signal.ampl - logZero;
+      const max = signal.ampl + signal.ampl * 0.1;
+      const min = signal.ampl - signal.ampl * 0.2;
       return [
         {
           label: "Логический 0",
           data: signalCoords.y.map(() => logZero),
-          borderColor: "#006c7670",
-          backgroundColor: "#006c7670",
+          borderColor: "#e2e61763",
+          backgroundColor: "#e2e61763",
           fill: false,
         },
         {
           label: "Логический 0",
-          data: signalCoords.y.map(() => -logZero),
-          borderColor: "#006c7670",
-          backgroundColor: "#006c7670",
+          data: signalCoords.y.map(() => signal.ampl * 0.1),
+          borderColor: "#e2e61763",
+          backgroundColor: "#e2e61763",
           fill: "-1",
         },
         {
           label: "Логическая 1",
           data: signalCoords.y.map(() => max),
-          borderColor: "#00c9ff80",
-          backgroundColor: "#00c9ff80",
+          borderColor: "#01c40063",
+          backgroundColor: "#01c40063",
           fill: "+1",
         },
         {
           label: "Логическая 1",
           data: signalCoords.y.map(() => min),
-          borderColor: "#00c9ff80",
-          backgroundColor: "#00c9ff80",
+          borderColor: "#01c40063",
+          backgroundColor: "#01c40063",
           fill: false,
         },
       ];
@@ -72,6 +73,9 @@ export const FilterChart = ({
     <Line
       options={{
         responsive: true,
+        interaction: {
+          intersect: false
+        },
         elements: {
           point: {
             radius: 0,
@@ -104,6 +108,7 @@ export const FilterChart = ({
           },
         },
         plugins: {
+          tooltip: tooltip,
           legend: {
             display: signal.type === 'digital',
             position: "top" as const,
@@ -119,10 +124,10 @@ export const FilterChart = ({
                       datasetIndex: i,
                       text: item.label || "",
                       fillStyle:
-                        item?.backgroundColor.toString() ||
+                        item?.backgroundColor?.toString() ||
                         "rgba(255, 79, 132, 0.5)",
                       strokeStyle:
-                        item?.backgroundColor.toString() ||
+                        item?.backgroundColor?.toString() ||
                         "rgba(255, 79, 132, 0.5)",
                       hidden: chart.getDatasetMeta(i).hidden,
                     })

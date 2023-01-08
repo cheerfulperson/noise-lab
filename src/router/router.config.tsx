@@ -1,16 +1,7 @@
 import { ReactElement } from "react";
 
 import { AppInfo, Conclude, Main, Maket, Material, WorkTrip } from ".././pages";
-
-export enum EAppRoutes {
-  MAIN = "",
-  APP_INFO = "/app-info",
-  CONCLUDE = "/conclude",
-  WORK_TRIP = "/work-trip",
-  MATERIAL = "/material",
-  MAKET = "/maket",
-  ANY = "*",
-}
+import { EAppRoutes } from "../types";
 
 type TRoutes = Record<string, ReactElement>;
 

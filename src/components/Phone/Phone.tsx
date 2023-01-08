@@ -1,5 +1,5 @@
 import { Button, Slider } from "@mui/material";
-import { ReactElement, useMemo } from "react";
+import { ReactElement, useMemo, useCallback } from "react";
 import { useResizeDetector } from "react-resize-detector";
 
 import { ISignalCoords } from "../../modules";
@@ -33,40 +33,40 @@ export const Phone = ({
   const { chartsData, signal, noise, brightness, lines, setBrightness } =
     useMaketContext();
   const frqAvarage = useMemo(() => (noise.maxF + noise.minF) / 2, [noise]);
-  const getMaxAnalogNoise = (
-    type: TNoiseType,
-    chartsData: ISignalCoords,
-    ampl: number
-  ): number => {
-    const k = getCoff(signal.type, signal.ampl, noise.maxN);
-    switch (type) {
-      case "fluct":
-        return Math.max(...(chartsData.y.map((el) => el * k))) * 1.5;
-      case "impuls":
-        return ampl;
-      case "period":
-        return ampl * 1.5;
-    }
-  };
-  const getMaxDigNoise = (
-    type: TNoiseType,
-    chartsData: ISignalCoords,
-    ampl: number
-  ): number => {
-    const k = getCoff(signal.type, signal.ampl, noise.maxN);
-    const { abs } = Math;
-    switch (type) {
-      case "fluct":
-        return (
-          chartsData.y.reduce((a, b) => abs(a * k) + abs(b * k)) /
-          chartsData.y.length
-        );
-      case "impuls":
-        return ampl;
-      case "period":
-        return ampl / 2;
-    }
-  };
+
+  const getMaxAnalogNoise = useCallback(
+    (type: TNoiseType, chartsData: ISignalCoords, ampl: number): number => {
+      const k = getCoff(signal.type, signal.ampl, noise.maxN);
+      switch (type) {
+        case "fluct":
+          return Math.max(...chartsData.y.map((el) => el * k)) * 1.5;
+        case "impuls":
+          return ampl;
+        case "period":
+          return ampl * 1.5;
+      }
+    },
+    [signal, noise]
+  );
+
+  const getMaxDigNoise = useCallback(
+    (type: TNoiseType, chartsData: ISignalCoords, ampl: number): number => {
+      const k = getCoff(signal.type, signal.ampl, noise.maxN);
+      const { abs } = Math;
+      switch (type) {
+        case "fluct":
+          return (
+            chartsData.y.reduce((a, b) => abs(a * k) + abs(b * k)) /
+            chartsData.y.length
+          );
+        case "impuls":
+          return ampl;
+        case "period":
+          return ampl / 2;
+      }
+    },
+    [signal, noise]
+  );
 
   const COEFFICIENT = useMemo(() => {
     const k = getCoff(signal.type, signal.ampl, noise.maxN);
@@ -84,9 +84,9 @@ export const Phone = ({
     const delta = maxSignal / maxNoise;
     const results = Math.round(Math.log(delta) * -20 + 16) / 100;
     return results;
-  }, [chartsData, noise, signal]);
+  }, [chartsData, noise, signal, getMaxAnalogNoise]);
 
-  const digitalCoff = useMemo<boolean>(() => {
+  const digitalCoff = useMemo<boolean | undefined>(() => {
     const k = getCoff(signal.type, signal.ampl, noise.maxN);
     const noiseData = {
       ...noise,
@@ -100,8 +100,11 @@ export const Phone = ({
       (noiseData.maxN + noiseData.minA) / 2
     );
 
+    if (signalAmpl / noise.maxN < 0.379 && signalAmpl / noise.maxN > 0.374) {
+      return;
+    }
     return noiseAmpl < signalAmpl;
-  }, [chartsData.noise.y, noise, signal.ampl]);
+  }, [chartsData, noise, signal, getMaxDigNoise]);
 
   const expK = useMemo<number>(
     () => (COEFFICIENT > 0.4 ? COEFFICIENT * 1.4 : COEFFICIENT),
@@ -248,18 +251,29 @@ export const Phone = ({
                 )}
                 {signal.type === "digital" && (
                   <>
-                    <Image
-                      imageType={image}
-                      className={styles.phone__screen_image}
-                      styles={{
-                        opacity: Number(digitalCoff),
-                      }}
-                    />
-
-                    {!digitalCoff && (
+                    {typeof digitalCoff === "boolean" && (
+                      <Image
+                        imageType={image}
+                        className={styles.phone__screen_image}
+                        styles={{
+                          opacity: Number(digitalCoff),
+                        }}
+                      />
+                    )}
+                    {typeof digitalCoff === "undefined" && (
+                      <Image
+                        imageType={image}
+                        className={styles.phone__screen_image_animate}
+                      />
+                    )}
+                    {digitalCoff === false && (
                       <div className={styles.phone__noise_dig}>
                         <p className={styles.phone__noise_dig_text}>
                           Нет сигнала
+                        </p>
+                        <p className={styles.phone__noise_dig_pretext}>
+                          Cигнал нижнего уровня после действия помехи больше,
+                          либо равен верхнему уровню логической единицы.
                         </p>
                       </div>
                     )}

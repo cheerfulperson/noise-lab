@@ -1,8 +1,8 @@
 import { Button } from "@mui/material";
 import { ReactElement } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
-import { EAppRoutes } from "../../router";
+import { EAppRoutes } from "../../types";
 import { Image } from "../../components";
 import bg from "../../assets/images/background.png";
 import styles from "./Main.module.scss";

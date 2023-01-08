@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   FormControl,
   InputLabel,
@@ -7,12 +8,11 @@ import {
   TextField,
 } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, ReactElement, useState } from "react";
+import { Dispatch, ReactElement, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 
 import {
-  initialMaketValues,
   TScreenImages,
   TSignalType,
   useMaketContext,
@@ -20,6 +20,8 @@ import {
 } from "../../../context/maket/useMaket";
 import { Image } from "../../../components";
 import styles from "./SignalSettings.module.scss";
+import { useAppStateContext } from "../../../context";
+import { styled } from "@mui/system";
 
 interface ISignalSettingsProps {
   setOpen: Dispatch<boolean>;
@@ -32,6 +34,11 @@ interface ISignalFormFields {
   ampl: number;
 }
 
+const CustomAlert = styled(Alert)`
+  max-width: 420px;
+  margin-bottom: 24px;
+`;
+
 const signalSchema = z.object({
   image: z.string(),
   type: z.string(),
@@ -41,8 +48,8 @@ const signalSchema = z.object({
       .number({
         errorMap: () => ({ message: "Значение должно быть числом" }),
       })
-      .min(0.1, "Минимальное значение 0.1")
-      .max(15, "Максимальное значение 15")
+      .min(0.1, "Минимальное значение 0.1В")
+      .max(15, "Максимальное значение 15В")
   ),
   frequency: z.preprocess(
     (value) => Number(z.union([z.string(), z.number()]).parse(value)),
@@ -58,13 +65,11 @@ const signalSchema = z.object({
 export const SignalSettings = ({
   setOpen,
 }: ISignalSettingsProps): ReactElement => {
+  const { getPrevSignal, pushSignal } = useAppStateContext();
   const images: Array<TScreenImages> = ["image1", "image2", "image3"];
-  const defaultValues = {
-    image: initialMaketValues.image,
-    ...initialMaketValues.signal,
-  };
   const { setSignal, image: currentImage, signal } = useMaketContext();
-  const { register, handleSubmit, control, reset, setValue, formState } =
+  const [type, setType] = useState<TSignalType>(signal.type);
+  const { register, handleSubmit, control, reset, setValue, formState, watch } =
     useForm<ISignalFormFields>({
       mode: "all",
       reValidateMode: "onChange",
@@ -79,13 +84,29 @@ export const SignalSettings = ({
 
   const submit = (data: ISignalFormFields): void => {
     setSignal(data);
+    pushSignal(data);
     setOpen(false);
   };
+
+  const prevStep = (): void => {
+    const prev = getPrevSignal();
+    reset(prev);
+    setSelectedImage(prev.image);
+  };
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (name === "type" && value.type) {
+        setType(value.type);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <div className={styles.signal_settings}>
       <h2 className={styles.signal_settings__title}>
-        Найстройка полезного сигнала
+        Настройка полезного сигнала
       </h2>
       <form
         className={styles.signal_settings__image_choose}
@@ -123,6 +144,12 @@ export const SignalSettings = ({
           <h3 className={styles.signal_settings__pretitle}>
             Выбор типа сигнала
           </h3>
+          {type === "analog" && (
+            <CustomAlert severity="warning">
+              Обратите внимание на качество изображения, с учетом амплитуды
+              помехи!
+            </CustomAlert>
+          )}
 
           <FormControl
             fullWidth
@@ -157,16 +184,21 @@ export const SignalSettings = ({
               label="Амплитуда"
               variant="outlined"
               color={formState.errors.ampl ? "error" : "info"}
+              helperText={
+                formState.errors.ampl ? (
+                  <p className={styles.signal_settings__error}>
+                    {formState.errors.ampl.message}
+                  </p>
+                ) : (
+                  "Диапазон значений от 0.1В до 15В"
+                )
+              }
               className={styles.signal_settings__input}
               {...register("ampl")}
             />
             <span className={styles.signal_settings__input_info}>В</span>
           </div>
-          {formState.errors.ampl && (
-            <p className={styles.signal_settings__error}>
-              {formState.errors.ampl.message}
-            </p>
-          )}
+          {}
         </div>
         <div className={styles.signal_settings__input_block}>
           Частота сигнала 800 МГц
@@ -198,9 +230,9 @@ export const SignalSettings = ({
             variant="contained"
             color="secondary"
             className={styles.signal_settings__button}
-            onClick={() => reset(defaultValues)}
+            onClick={prevStep}
           >
-            сбросить
+            шаг назад
           </Button>
           <Button
             type="submit"

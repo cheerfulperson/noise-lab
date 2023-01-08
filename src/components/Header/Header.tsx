@@ -1,10 +1,10 @@
 import { Button } from "@mui/material";
 import { Help } from "@mui/icons-material";
 import { ReactElement } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import styles from "./Header.module.scss";
-import { EAppRoutes } from "../../router/router.config";
+import { EAppRoutes } from "../../types";
 
 export const Header = (): ReactElement => {
   const location = useLocation();
@@ -41,7 +41,7 @@ export const Header = (): ReactElement => {
           }
           onClick={() => navigate(EAppRoutes.WORK_TRIP)}
         >
-          ход работы
+          Задание
         </Button>
         <Button
           variant={
@@ -61,7 +61,7 @@ export const Header = (): ReactElement => {
           }
           onClick={() => navigate(EAppRoutes.CONCLUDE)}
         >
-          заключение
+          Содержание отчета
         </Button>
         <Button
           variant={

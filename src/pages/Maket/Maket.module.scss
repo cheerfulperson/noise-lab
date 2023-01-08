@@ -1,20 +1,25 @@
-@use '../../index.scss' as global;
+@use "../../index.scss" as global;
 
 .maket {
   display: flex;
-  justify-content: center;
   align-items: center;
+  flex-direction: column;
   padding: 16px;
   height: calc(100vh - global.$header-height - 2px);
+  overflow-y: auto;
 
   &__title {
-    font-size: 48px;
+    font-size: 24px;
+    max-width: 420px;
+    padding-bottom: 24px;
+    text-align: center;
   }
 
   &__wrapper_middle {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 32px;
   }
 
   &__button_group {
@@ -41,4 +46,14 @@
     height: 700px !important;
   }
 
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-width: 420px;
+  }
+
+  &__container {
+    display: flex;
+  }
 }

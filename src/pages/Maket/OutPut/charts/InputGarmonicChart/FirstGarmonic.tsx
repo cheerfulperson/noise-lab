@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import { Line } from "react-chartjs-2";
 
 import { IAnalogSignalData } from "../../../../../modules/signal/signal";
+import { tooltip } from "../InputChart";
 
 interface IFirstGarmonicProps {
   signalCoords: IAnalogSignalData;
@@ -24,6 +25,9 @@ export const FirstGarmonic = ({
 
   return <Line options={{
     responsive: true,
+    interaction: {
+      intersect: false
+    },
     elements: {
       point: {
         radius: 0,
@@ -56,12 +60,13 @@ export const FirstGarmonic = ({
       },
     },
     plugins: {
+      tooltip: tooltip,
       legend: {
         position: "center" as const,
       },
       title: {
         display: true,
-        text: "Первая гармоника с амплитудой = 3 · A",
+        text: "Первая гармоника",
         font: {
           size() {
             return 24;

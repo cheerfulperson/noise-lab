@@ -11,13 +11,13 @@ import { Dispatch, ReactElement } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 import {
-  initialMaketValues,
   noiseNaming,
   TNoiseType,
   useMaketContext,
 } from "../../../context/maket/useMaket";
 import styles from "./NoiseSettings.module.scss";
 import { z } from "zod";
+import { useAppStateContext } from "../../../context";
 
 interface INoiseSettingsProps {
   setOpen: Dispatch<boolean>;
@@ -37,8 +37,8 @@ const noiseSettingsSchema = z.object({
       .number({
         errorMap: () => ({ message: "Значение должно быть числом" }),
       })
-      .min(0.1, "Минимальное значение 0.1")
-      .max(15, "Максимальное значение 15")
+      .min(0.1, "Минимальное значение 0.1В")
+      .max(15, "Максимальное значение 15В")
   ),
   averageF: z.preprocess(
     (value) => Number(z.union([z.string(), z.number()]).parse(value)),
@@ -46,14 +46,15 @@ const noiseSettingsSchema = z.object({
       .number({
         errorMap: () => ({ message: "Значение должно быть числом" }),
       })
-      .min(0.15, "Минимальное значение 0.15")
-      .max(1000, "Максимальное значение 1000")
+      .min(0.15, "Минимальное значение 0.15Мгц")
+      .max(1000, "Максимальное значение 1000Мгц")
   ),
 });
 
 export const NoiseSettings = ({
   setOpen,
 }: INoiseSettingsProps): ReactElement => {
+  const { getPrevNoise, pushNoise } = useAppStateContext();
   const {
     setNoise,
     noise: { maxF, maxN, minA, minF, type },
@@ -79,7 +80,21 @@ export const NoiseSettings = ({
       minA: data.averageA * 0.5,
       type: data.type,
     });
+    pushNoise({
+      ampl: data.averageA,
+      frequency: data.averageF,
+      type: data.type,
+    });
     setOpen(false);
+  };
+
+  const prevStep = (): void => {
+    const prev = getPrevNoise();
+    reset({
+      averageA: prev.ampl,
+      averageF: prev.frequency,
+      type: prev.type,
+    });
   };
 
   return (
@@ -122,33 +137,32 @@ export const NoiseSettings = ({
               label="Средняя амплитуда"
               variant="outlined"
               color={formState.errors.averageA ? "error" : "info"}
+              helperText={formState.errors.averageA ? (
+                <p className={styles.noise_settings__error}>
+                  {formState.errors.averageA.message}
+                </p>
+              ) : 'Диапазон значений от 0.1В до 15В'}
               className={styles.noise_settings__input}
               {...register("averageA")}
             />
             <span className={styles.noise_settings__input_info}>В</span>
           </div>
-          {formState.errors.averageA && (
-            <p className={styles.noise_settings__error}>
-              {formState.errors.averageA.message}
-            </p>
-          )}
-
           <div className={styles.noise_settings__input_block}>
             <TextField
               id="noise_settings_min_gz"
               label="Средняя частота"
               variant="outlined"
               color={formState.errors.averageF ? "error" : "info"}
+              helperText={formState.errors.averageF ? (
+                <p className={styles.noise_settings__error}>
+                  {formState.errors.averageF.message}
+                </p>
+              ) : 'Диапазон значений от 0.15Мгц до 1000Мгц'}
               className={styles.noise_settings__input}
               {...register("averageF")}
             />
             <span className={styles.noise_settings__input_info}>МГц</span>
           </div>
-          {formState.errors.averageF && (
-            <p className={styles.noise_settings__error}>
-              {formState.errors.averageF.message}
-            </p>
-          )}
         </div>
         <div className={styles.noise_settings__buttons}>
           <Button
@@ -165,16 +179,9 @@ export const NoiseSettings = ({
             variant="contained"
             color="secondary"
             className={styles.noise_settings__button}
-            onClick={() => {
-              const noise = initialMaketValues.noise;
-              reset({
-                averageA: (noise.minA + noise.maxN) / 2,
-                averageF: (noise.minF + noise.maxF) / 2,
-                type: noise.type,
-              });
-            }}
+            onClick={prevStep}
           >
-            сбросить
+            шаг назад
           </Button>
           <Button
             type="submit"

@@ -26,7 +26,6 @@ export const OutPut = (): ReactElement => {
           {!isGarmonicOpen && (
             <div className={styles.signal_settings__chart_block}>
               <div className={styles.signal_settings__chart}>
-                <Paper style={{ justifyContent: "center" }}>
                   <h2 className={styles.signal_settings__title}>
                     Полезный сигнал
                   </h2>
@@ -37,17 +36,16 @@ export const OutPut = (): ReactElement => {
                   >
                     Показать гармоники
                   </Button>
-                  <h2 className={styles.signal_settings__chart_title}>
+                  {/* <h2 className={styles.signal_settings__chart_title}>
                     U(t) = A · (3 · sin(t) + 2 · sin(3t) + 0.5 · sin(5t)).{" "}
                     <Link to={"/material"}>(См. теор. материал стр. 9).</Link>
                   </h2>
                   <p className={styles.signal_settings__chart_subtitle}>
                     Где A - амплитуда, которую вы задаете, t - промежуток
                     времени.
-                  </p>
+                  </p> */}
 
                   <InputChart signalCoords={chartsData.analog} />
-                </Paper>
               </div>
               <div className={styles.signal_settings__chart}>
                 <NoiseChart signalCoords={chartsData.noise} />
