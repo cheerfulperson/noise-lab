@@ -1,7 +1,13 @@
 .conclude {
-  padding: 24px;
-  max-width: 680px;
-  margin: auto;
+  margin-top: 24px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+
+  &__wrapper {
+    max-width: 680px;
+    margin: auto;
+    padding: 24px;
+  }
 
   &__title {
     font-weight: 600;

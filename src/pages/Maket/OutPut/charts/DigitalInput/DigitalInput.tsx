@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import { Line } from "react-chartjs-2";
 
+import { useMaketContext } from "../../../../../context";
 // eslint-disable-next-line import/no-unresolved
 import { ISignalCoords } from "../../../../../modules/signal/signal";
 import { tooltip } from "../InputChart";
@@ -12,8 +13,9 @@ interface IDigitalInputChartProps {
 export const DigitalInputChart = ({
   signalCoords,
 }: IDigitalInputChartProps): ReactElement => {
+
   const dataSignal = {
-    labels: signalCoords.x,
+    labels: signalCoords.x.sort(),
     datasets: [
       {
         label: "Напряжение",

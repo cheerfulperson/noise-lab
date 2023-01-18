@@ -23,7 +23,7 @@ const getSignalPoint = (t: number): number =>
   (sin(t) + sin(2 * t) + sin(3 * t)) / 2.5;
 
 const getDigitalPoint = (t: number): number => {
-  const value = sin((t / 90) * PI);
+  const value = sin((t / 180) * PI);
 
   if ((value > 0 && value < 0.5) || (value < 0 && value > -0.5)) {
     return 0;

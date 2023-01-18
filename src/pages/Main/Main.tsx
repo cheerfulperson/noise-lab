@@ -1,14 +1,17 @@
 import { Button } from "@mui/material";
 import { ReactElement } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { EAppRoutes } from "../../types";
 import { Image } from "../../components";
 import bg from "../../assets/images/background.png";
 import styles from "./Main.module.scss";
 
 export const Main = (): ReactElement => {
-  const navigate = useNavigate();
+
+  const openTrip = (): void => {
+    if (typeof window !== 'undefined' && window.electron) {
+      window.electron.openTrip();
+    }
+  }
 
   return (
     <div className={styles.main} style={{ backgroundImage: `url(${bg})` }}>
@@ -22,7 +25,7 @@ export const Main = (): ReactElement => {
       <div className={styles.main__button}>
         <Button
           variant="contained"
-          onClick={() => navigate(EAppRoutes.WORK_TRIP)}
+          onClick={openTrip}
         >
           начать работу
         </Button>

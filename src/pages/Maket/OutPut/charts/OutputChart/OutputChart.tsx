@@ -19,7 +19,7 @@ export const OutputChart = ({
   const datasets = useMemo(() => {
     if (signal.type === "digital") {
       const logZero = signal.ampl * 0.4;
-      const max = signal.ampl + signal.ampl * 0.1;
+      const max = signal.ampl + signal.ampl * 0.2;
       const min = signal.ampl - signal.ampl * 0.2;
       return [
         {
@@ -31,7 +31,7 @@ export const OutputChart = ({
         },
         {
           label: "Логический 0",
-          data: signalCoords.y.map(() => signal.ampl * 0.1),
+          data: signalCoords.y.map(() => 0),
           borderColor: "#e2e61763",
           backgroundColor: "#e2e61763",
           fill: "-1",
@@ -59,7 +59,7 @@ export const OutputChart = ({
     labels: signalCoords.x,
     datasets: [
       {
-        label: "Напряжение",
+        label: "Сигнал с учетом помехи",
         data: signalCoords.y,
         borderColor: "rgb(255, 79, 132)",
         backgroundColor: "rgba(255, 79, 132, 0.5)",
@@ -73,7 +73,7 @@ export const OutputChart = ({
       options={{
         responsive: true,
         interaction: {
-          intersect: false
+          intersect: false,
         },
         elements: {
           point: {

@@ -10,6 +10,24 @@ export const Header = (): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const openTrip = (): void => {
+    if (typeof window !== 'undefined' && window.electron) {
+      window.electron.openTrip();
+    }
+  }
+
+  const openMaterial = (): void => {
+    if (typeof window !== 'undefined' && window.electron) {
+      window.electron.openMaterial();
+    }
+  }
+
+  const openMeth = (): void => {
+    if (typeof window !== 'undefined' && window.electron) {
+      window.electron.openMeth();
+    }
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.header__wrapper}>
@@ -25,21 +43,27 @@ export const Header = (): ReactElement => {
         </Button>
         <Button
           variant={
-            location.pathname.includes(EAppRoutes.MATERIAL)
-              ? "contained"
-              : "outlined"
+            "outlined"
           }
-          onClick={() => navigate(EAppRoutes.MATERIAL)}
+          onClick={openMaterial}
         >
           Теор. материал
         </Button>
         <Button
           variant={
-            location.pathname.includes(EAppRoutes.WORK_TRIP)
+            location.pathname.includes(EAppRoutes.MATERIAL)
               ? "contained"
               : "outlined"
           }
-          onClick={() => navigate(EAppRoutes.WORK_TRIP)}
+          onClick={openMeth}
+        >
+          Методика иссл.
+        </Button>
+        <Button
+          variant={
+            "outlined"
+          }
+          onClick={openTrip}
         >
           Задание
         </Button>

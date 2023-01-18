@@ -21,6 +21,7 @@ export const getFluctuationNoise = ({
     return Number((i / (random() * (maxF - minF) + minF)).toFixed(3));
   });
 
+  console.log(x);
   const y = Array.from({ length: amountPoints }, (_, i) => {
     const minor = i % 2 === 0 ? 1 : -1;
     return minor * (random() * (maxN - minA) + minA);
@@ -43,7 +44,7 @@ export const getImpulsNoise = ({
   });
   const y = Array.from({ length: amountPoints }, (_, i) => {
     const minor = i % 2 === 0 ? 1 : -1;
-    const delta = random() < 0.2 ? 1 : 10;
+    const delta = random() < 0.2 ? 1 : 15;
     return minor * ((random() * (maxN - minA)) / delta + minA);
   });
 

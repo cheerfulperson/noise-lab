@@ -32,7 +32,15 @@ interface INoiseFormFields {
 const noiseSettingsSchema = z.object({
   type: z.string(),
   averageA: z.preprocess(
-    (value) => Number(z.union([z.string(), z.number()]).parse(value)),
+    (value) =>
+      Number(
+        z
+          .union([
+            z.string().transform((value) => value.replace(",", ".")),
+            z.number(),
+          ])
+          .parse(value)
+      ),
     z
       .number({
         errorMap: () => ({ message: "Значение должно быть числом" }),
@@ -41,7 +49,15 @@ const noiseSettingsSchema = z.object({
       .max(15, "Максимальное значение 15В")
   ),
   averageF: z.preprocess(
-    (value) => Number(z.union([z.string(), z.number()]).parse(value)),
+    (value) =>
+      Number(
+        z
+          .union([
+            z.string().transform((value) => value.replace(",", ".")),
+            z.number(),
+          ])
+          .parse(value)
+      ),
     z
       .number({
         errorMap: () => ({ message: "Значение должно быть числом" }),
@@ -105,10 +121,10 @@ export const NoiseSettings = ({
         onSubmit={handleSubmit(submit)}
       >
         <div className={styles.noise_settings__selects}>
-          <h3 className={styles.noise_settings__pretitle}>Выбор типа помех</h3>
+          <h3 className={styles.noise_settings__pretitle}>Выбор вида помех</h3>
 
           <FormControl fullWidth className={styles.noise_settings__signal_type}>
-            <InputLabel id="demo-simple-select-label">Тип помехи</InputLabel>
+            <InputLabel id="demo-simple-select-label">Вид помехи</InputLabel>
             <Controller
               name="type"
               control={control}
@@ -117,7 +133,7 @@ export const NoiseSettings = ({
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={value}
-                  label="Тип помехи"
+                  label="Вид помехи"
                   onChange={onChange}
                 >
                   {Object.entries(noiseNaming).map(([value, text]) => (
@@ -137,11 +153,15 @@ export const NoiseSettings = ({
               label="Средняя амплитуда"
               variant="outlined"
               color={formState.errors.averageA ? "error" : "info"}
-              helperText={formState.errors.averageA ? (
-                <p className={styles.noise_settings__error}>
-                  {formState.errors.averageA.message}
-                </p>
-              ) : 'Диапазон значений от 0.1В до 15В'}
+              helperText={
+                formState.errors.averageA ? (
+                  <p className={styles.noise_settings__error}>
+                    {formState.errors.averageA.message}
+                  </p>
+                ) : (
+                  "Диапазон значений от 0.1В до 15В"
+                )
+              }
               className={styles.noise_settings__input}
               {...register("averageA")}
             />
@@ -153,11 +173,15 @@ export const NoiseSettings = ({
               label="Средняя частота"
               variant="outlined"
               color={formState.errors.averageF ? "error" : "info"}
-              helperText={formState.errors.averageF ? (
-                <p className={styles.noise_settings__error}>
-                  {formState.errors.averageF.message}
-                </p>
-              ) : 'Диапазон значений от 0.15Мгц до 1000Мгц'}
+              helperText={
+                formState.errors.averageF ? (
+                  <p className={styles.noise_settings__error}>
+                    {formState.errors.averageF.message}
+                  </p>
+                ) : (
+                  "Диапазон значений от 0.15Мгц до 1000Мгц"
+                )
+              }
               className={styles.noise_settings__input}
               {...register("averageF")}
             />

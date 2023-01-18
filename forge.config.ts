@@ -16,7 +16,7 @@ const config: ForgeConfig = {
     new MakerSquirrel({
       noMsi: false,
     }),
-    // new ZipMaker({}),
+    new ZipMaker({}),
   ],
   plugins: [
     new WebpackPlugin({

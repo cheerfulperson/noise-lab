@@ -13,7 +13,7 @@ export const NoiseChart = ({
   signalCoords,
 }: INoiseChartProps): ReactElement => {
   const dataSignal = {
-    labels: signalCoords.x,
+    labels: signalCoords.x.sort(),
     datasets: [
       {
         label: "Напряжение",

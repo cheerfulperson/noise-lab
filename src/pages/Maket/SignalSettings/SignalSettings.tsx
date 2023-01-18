@@ -43,7 +43,15 @@ const signalSchema = z.object({
   image: z.string(),
   type: z.string(),
   ampl: z.preprocess(
-    (value) => Number(z.union([z.string(), z.number()]).parse(value)),
+    (value) =>
+      Number(
+        z
+          .union([
+            z.string().transform((value) => value.replace(",", ".")),
+            z.number(),
+          ])
+          .parse(value)
+      ),
     z
       .number({
         errorMap: () => ({ message: "Значение должно быть числом" }),
@@ -69,16 +77,26 @@ export const SignalSettings = ({
   const images: Array<TScreenImages> = ["image1", "image2", "image3"];
   const { setSignal, image: currentImage, signal } = useMaketContext();
   const [type, setType] = useState<TSignalType>(signal.type);
-  const { register, handleSubmit, control, reset, setValue, formState, watch } =
-    useForm<ISignalFormFields>({
-      mode: "all",
-      reValidateMode: "onChange",
-      resolver: zodResolver(signalSchema),
-      defaultValues: {
-        ...signal,
-        image: currentImage,
-      },
-    });
+  const [ampl, setAmpl] = useState<number>(signal.ampl);
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    setError,
+    getValues,
+    formState,
+    watch,
+  } = useForm<ISignalFormFields>({
+    mode: "all",
+    reValidateMode: "onChange",
+    resolver: zodResolver(signalSchema),
+    defaultValues: {
+      ...signal,
+      image: currentImage,
+    },
+  });
   const [selectedImage, setSelectedImage] =
     useState<TScreenImages>(currentImage);
 
@@ -95,9 +113,25 @@ export const SignalSettings = ({
   };
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
+    const subscription = watch((value, { name }) => {
       if (name === "type" && value.type) {
         setType(value.type);
+      }
+      if (
+        name === "ampl" &&
+        value.ampl &&
+        value.ampl >= 3 &&
+        value.ampl <= 15
+      ) {
+        setAmpl(value.ampl);
+
+        if (value.ampl < 3 && getValues("type") === "digital") {
+          setError(
+            "ampl",
+            { message: "Минимальное значение 3В" },
+            { shouldFocus: true }
+          );
+        }
       }
     });
     return () => subscription.unsubscribe();
@@ -142,7 +176,7 @@ export const SignalSettings = ({
 
         <div className={styles.signal_settings__selects}>
           <h3 className={styles.signal_settings__pretitle}>
-            Выбор типа сигнала
+            Выбор вида сигнала
           </h3>
           {type === "analog" && (
             <CustomAlert severity="warning">
@@ -150,12 +184,18 @@ export const SignalSettings = ({
               помехи!
             </CustomAlert>
           )}
-
+          {type === "digital" && (
+            <CustomAlert severity="info">
+              Уровень логичской 1 от {(ampl - ampl * 0.2).toFixed(2)} В до{" "}
+              {(+ampl + ampl * 0.2).toFixed(2)} В! Уровень логического 0 от 0 В
+              до {(ampl * 0.4).toFixed(2)} В
+            </CustomAlert>
+          )}
           <FormControl
             fullWidth
             className={styles.signal_settings__signal_type}
           >
-            <InputLabel id="demo-simple-select-label">Тип сигнала</InputLabel>
+            <InputLabel id="demo-simple-select-label">Вид сигнала</InputLabel>
             <Controller
               name="type"
               control={control}
@@ -164,7 +204,7 @@ export const SignalSettings = ({
                   labelId="demo-simple-select-label"
                   id="select-signal"
                   value={value}
-                  label="Тип сигнала"
+                  label="Вид сигнала"
                   onChange={onChange}
                 >
                   {Object.entries(signalsNaming).map(([key, text]) => (
@@ -181,7 +221,7 @@ export const SignalSettings = ({
           <div className={styles.signal_settings__input_block}>
             <TextField
               id="signal_settings_a"
-              label="Амплитуда"
+              label={type === "digital" ? "Значение логической 1" : "Максимальная амплитуда"}
               variant="outlined"
               color={formState.errors.ampl ? "error" : "info"}
               helperText={
@@ -189,6 +229,8 @@ export const SignalSettings = ({
                   <p className={styles.signal_settings__error}>
                     {formState.errors.ampl.message}
                   </p>
+                ) : type === "digital" ? (
+                  "Диапазон значений от 3В до 15В"
                 ) : (
                   "Диапазон значений от 0.1В до 15В"
                 )

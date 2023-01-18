@@ -19,7 +19,7 @@ export const FilterChart = ({
   const datasets = useMemo(() => {
     if (signal.type === "digital") {
       const logZero = signal.ampl * 0.4;
-      const max = signal.ampl + signal.ampl * 0.1;
+      const max = signal.ampl + signal.ampl * 0.2;
       const min = signal.ampl - signal.ampl * 0.2;
       return [
         {
@@ -31,7 +31,7 @@ export const FilterChart = ({
         },
         {
           label: "Логический 0",
-          data: signalCoords.y.map(() => signal.ampl * 0.1),
+          data: signalCoords.y.map(() => 0),
           borderColor: "#e2e61763",
           backgroundColor: "#e2e61763",
           fill: "-1",
@@ -59,7 +59,7 @@ export const FilterChart = ({
     labels: signalCoords.x,
     datasets: [
       {
-        label: "Напряжение",
+        label: "Сигнал",
         fill: false,
         data: signalCoords.y,
         borderColor: "rgb(255, 79, 132)",

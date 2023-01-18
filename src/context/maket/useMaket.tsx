@@ -113,14 +113,14 @@ export const initialMaketValues: IMaketState = {
   brightness: 50,
   pointsAmount: {
     analog: 1000,
-    digital: 500,
-    noise: 130,
+    digital: 1000,
+    noise: 50,
   },
   signal: {
     type: "analog",
     name: signalsNaming["analog"],
     frequency: 800,
-    ampl: 1,
+    ampl: 3,
   },
   noise: {
     type: "fluct",
@@ -143,6 +143,10 @@ export const MaketProvider = ({
       noise: {
         ...noise,
         name: noiseNaming[noise.type],
+      },
+      pointsAmount: {
+        ...prev.pointsAmount,
+        noise: noise.type === "fluct" ? 50 : noise.type === "impuls" ? 80 : 120,
       },
     }));
   };

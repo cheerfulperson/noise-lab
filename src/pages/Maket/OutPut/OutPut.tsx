@@ -12,7 +12,6 @@ import {
   OutputChart,
 } from "./charts";
 import { useMaketContext } from "../../../context";
-import { Link } from "react-router-dom";
 
 export const OutPut = (): ReactElement => {
   const { signal, chartsData } = useMaketContext();
@@ -26,17 +25,17 @@ export const OutPut = (): ReactElement => {
           {!isGarmonicOpen && (
             <div className={styles.signal_settings__chart_block}>
               <div className={styles.signal_settings__chart}>
-                  <h2 className={styles.signal_settings__title}>
-                    Полезный сигнал
-                  </h2>
-                  <Button
-                    variant="outlined"
-                    style={{ margin: "auto", display: "block" }}
-                    onClick={() => setIsGarmonicOpen(true)}
-                  >
-                    Показать гармоники
-                  </Button>
-                  {/* <h2 className={styles.signal_settings__chart_title}>
+                <h2 className={styles.signal_settings__title}>
+                  Полезный сигнал
+                </h2>
+                <Button
+                  variant="outlined"
+                  style={{ margin: "auto", display: "block" }}
+                  onClick={() => setIsGarmonicOpen(true)}
+                >
+                  Показать гармоники
+                </Button>
+                {/* <h2 className={styles.signal_settings__chart_title}>
                     U(t) = A · (3 · sin(t) + 2 · sin(3t) + 0.5 · sin(5t)).{" "}
                     <Link to={"/material"}>(См. теор. материал стр. 9).</Link>
                   </h2>
@@ -45,7 +44,7 @@ export const OutPut = (): ReactElement => {
                     времени.
                   </p> */}
 
-                  <InputChart signalCoords={chartsData.analog} />
+                <InputChart signalCoords={chartsData.analog} />
               </div>
               <div className={styles.signal_settings__chart}>
                 <NoiseChart signalCoords={chartsData.noise} />
@@ -82,20 +81,19 @@ export const OutPut = (): ReactElement => {
             <NoiseChart signalCoords={chartsData.noise} />
           </div>
           <div className={styles.signal_settings__chart}>
-            <Alert severity="info">
-              Незакрашенная зона между 1 и 0 это неопределенное состояние! В
-              пределах "неопределённого" диапазона для любого входа логического
-              элемента, будет иметься точка разделения актуального сигнала
-              низкого уровня от диапазона действительного входного сигнала
-              высокого уровня. То есть, где-то между наименьшим напряжением
-              сигнала высокого логического уровня и наибольшим напряжением
-              сигнала низкого логического уровня гарантированного
-              производителем, существует порог напряжения, при котором
-              логическая схема будет менять интерпретацию сигнала с высокого на
-              низкий и наоборот.
-            </Alert>
             <OutputChart signalCoords={chartsData.output} />
           </div>
+          <Alert severity="info">
+            Незакрашенная зона между 1 и 0 это неопределенное состояние! В
+            пределах "неопределённого" диапазона для любого входа логического
+            элемента, будет иметься точка разделения актуального сигнала низкого
+            уровня от диапазона действительного входного сигнала высокого
+            уровня. То есть, где-то между наименьшим напряжением сигнала
+            высокого логического уровня и наибольшим напряжением сигнала низкого
+            логического уровня гарантированного производителем, существует порог
+            напряжения, при котором логическая схема будет менять интерпретацию
+            сигнала с высокого на низкий и наоборот.
+          </Alert>
           <div className={styles.signal_settings__chart}>
             <FilterChart signalCoords={chartsData.filter} />
           </div>

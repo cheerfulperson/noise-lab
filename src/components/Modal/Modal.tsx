@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { MouseEvent as ReactMouseEvent, ReactElement, ReactNode } from "react";
 
 import styles from "./Modal.module.scss";
@@ -39,7 +40,7 @@ export const Modal = ({
             className={styles.modal__close_btn}
             onClick={onClose}
           >
-            <Close />
+            <ArrowBackIcon />
           </Button>
         )}
 

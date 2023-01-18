@@ -39,16 +39,15 @@ export const Maket = (): ReactElement => {
               }}
             />
             <Alert severity="info">
-              На этом устройстве устанавливается изначальная форма сигнала и
-              изображение без искажений, также можно настраивать полезный сигнал
-              и его изображение.
+              На этом устройстве отображается полезный сигнал.
             </Alert>
           </div>
           <div className={styles.maket__wrapper_middle}>
-          <h2 className={styles.maket__title}>
-          Выполнение экспериментальной части работы
-        </h2>
+            <h2 className={styles.maket__title}>
+              Выполнение экспериментальной части работы
+            </h2>
             <div>
+              <h3>В данный момент:</h3>
               <p>
                 <strong>Вид сигнала:</strong> {signal.name}
               </p>
@@ -88,8 +87,7 @@ export const Maket = (): ReactElement => {
             <Phone image={image} phoneType="out" />
             <Alert severity="info">
               На этом устройстве отображается результат действия помех на
-              полезный сигнал. В том числе можно наблюдать заметность помех от
-              яркости экрана.
+              полезный сигнал.
             </Alert>
           </div>
         </div>
