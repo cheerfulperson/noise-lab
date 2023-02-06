@@ -18,9 +18,9 @@ export const OutputChart = ({
 
   const datasets = useMemo(() => {
     if (signal.type === "digital") {
-      const logZero = signal.ampl * 0.4;
-      const max = signal.ampl + signal.ampl * 0.2;
-      const min = signal.ampl - signal.ampl * 0.2;
+      const logZero = signal.ampl * 0.25;
+      const max = signal.ampl;
+      const min = signal.ampl - signal.ampl * 0.25;
       return [
         {
           label: "Логический 0",
@@ -94,6 +94,7 @@ export const OutputChart = ({
             },
           },
           x: {
+            display: signal.type !== 'digital',
             title: {
               display: true,
               text: "t, мкс",

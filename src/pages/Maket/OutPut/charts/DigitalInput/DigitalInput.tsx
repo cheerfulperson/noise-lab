@@ -4,7 +4,7 @@ import { Line } from "react-chartjs-2";
 import { useMaketContext } from "../../../../../context";
 // eslint-disable-next-line import/no-unresolved
 import { ISignalCoords } from "../../../../../modules/signal/signal";
-import { tooltip } from "../InputChart";
+import { tooltipDig } from "../InputChart";
 
 interface IDigitalInputChartProps {
   signalCoords: ISignalCoords;
@@ -13,7 +13,6 @@ interface IDigitalInputChartProps {
 export const DigitalInputChart = ({
   signalCoords,
 }: IDigitalInputChartProps): ReactElement => {
-
   const dataSignal = {
     labels: signalCoords.x.sort(),
     datasets: [
@@ -22,9 +21,10 @@ export const DigitalInputChart = ({
         data: signalCoords.y,
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
-      }, {
+      },
+      {
         data: [Math.max(...signalCoords.y) * 1.2],
-      }
+      },
     ],
   };
 
@@ -51,20 +51,11 @@ export const DigitalInputChart = ({
             },
           },
           x: {
-            title: {
-              display: true,
-              text: "t, мкс",
-              align: "center",
-              font() {
-                return {
-                  weight: "600",
-                };
-              },
-            },
+            display: false,
           },
         },
         plugins: {
-          tooltip: tooltip,
+          tooltip: tooltipDig,
           legend: {
             position: "center" as const,
           },

@@ -49,26 +49,28 @@ export const Phone = ({
     [signal, noise]
   );
 
-  const getMaxDigNoise = useCallback(
-    (type: TNoiseType, chartsData: ISignalCoords, ampl: number): number => {
-      const k = getCoff(signal.type, signal.ampl, noise.maxN);
-      const { abs } = Math;
-      switch (type) {
-        case "fluct":
-          return (
-            chartsData.y.reduce((a, b) => abs(a * k) + abs(b * k)) /
-            chartsData.y.length
-          );
-        case "impuls":
-          return ampl;
-        case "period":
-          return ampl / 2;
-      }
-    },
-    [signal, noise]
-  );
+  // const getMaxDigNoise = useCallback(
+  //   (type: TNoiseType, chartsData: ISignalCoords, ampl: number): number => {
+  //     const k = getCoff(signal.type, signal.ampl, noise.maxN);
+  //     const { abs } = Math;
+  //     switch (type) {
+  //       case "fluct":
+  //         return (
+  //           chartsData.y.reduce((a, b) => abs(a * k) + abs(b * k)) /
+  //           chartsData.y.length
+  //         );
+  //       case "impuls":
+  //         return ampl;
+  //       case "period":
+  //         return ampl / 2;
+  //     }
+  //   },
+  //   [signal, noise]
+  // );
 
   const COEFFICIENT = useMemo(() => {
+    if (signal.type !== "analog") return 0;
+
     const k = getCoff(signal.type, signal.ampl, noise.maxN);
     const noiseData = {
       ...noise,
@@ -82,39 +84,77 @@ export const Phone = ({
       (noiseData.maxN + noiseData.minA) / 2
     );
     const delta = maxSignal / maxNoise;
-    const results = Math.round(Math.log(delta) * -20 + 16) / 100;
+    const results = Math.round(Math.log(delta) * -20 + 16) / 50;
     return results;
   }, [chartsData, noise, signal, getMaxAnalogNoise]);
 
-  const digitalCoff = useMemo<boolean | undefined>(() => {
-    const k = getCoff(signal.type, signal.ampl, noise.maxN);
-    const noiseData = {
-      ...noise,
-      maxN: noise.maxN * k,
-      minA: noise.minA * k,
-    };
-    const signalAmpl = signal.ampl / 2;
-    const noiseAmpl = getMaxDigNoise(
-      noise.type,
-      chartsData.noise,
-      (noiseData.maxN + noiseData.minA) / 2
-    );
+  const digitalCoff = useMemo<number>(() => {
+    const signalAmpl = signal.ampl;
+    return (signalAmpl / (noise.maxN + noise.minA)) * 2;
+  }, [noise, signal]);
 
-    if (signalAmpl / noise.maxN < 0.379 && signalAmpl / noise.maxN > 0.374) {
-      return;
+  const expK = useMemo<number>(() => {
+    if (COEFFICIENT < -0.5) return 0;
+    if (COEFFICIENT >= -0.5 && COEFFICIENT < 0) {
+      return Math.abs(0.5 + COEFFICIENT) * 0.5;
     }
-    return noiseAmpl < signalAmpl;
-  }, [chartsData, noise, signal, getMaxDigNoise]);
+    return COEFFICIENT * 1.2;
+  }, [COEFFICIENT]);
 
-  const expK = useMemo<number>(
-    () => (COEFFICIENT > 0.4 ? COEFFICIENT * 1.4 : COEFFICIENT),
-    [COEFFICIENT]
-  );
+  const expImpl = useMemo<number>(() => {
+    if (COEFFICIENT < -0.76) return 0;
+    if (COEFFICIENT >= -0.76 && COEFFICIENT < 0) {
+      return Math.abs(0.76 + COEFFICIENT) * 0.4;
+    }
+    if (COEFFICIENT > 0 && COEFFICIENT < 0.05) {
+      return COEFFICIENT * 8;
+    }
+    if (COEFFICIENT >= 0.05 && COEFFICIENT < 0.1) {
+      return COEFFICIENT * 4;
+    }
+    if (COEFFICIENT >= 0.1 && COEFFICIENT < 0.25) {
+      return COEFFICIENT * 3;
+    }
+    return COEFFICIENT === 0 ? 0.5 : COEFFICIENT * 1.5;
+  }, [COEFFICIENT]);
 
-  const expImpl = useMemo<number>(
-    () => (COEFFICIENT > 0.3 ? COEFFICIENT * 1.2 : COEFFICIENT),
-    [COEFFICIENT]
-  );
+  const expPeriod = useMemo<number>(() => {
+    if (COEFFICIENT < -0.3) return 0;
+    if (COEFFICIENT >= -0.3 && COEFFICIENT < 0) {
+      return Math.abs(0.3 + COEFFICIENT) * 0.32;
+    }
+    return COEFFICIENT;
+  }, [COEFFICIENT]);
+
+  const digLines = useMemo<ReactElement | null>(() => {
+    console.log(digitalCoff);
+    if (digitalCoff > 1 || signal.type !== "digital") return null;
+
+    const maxHeight = Math.floor((height - 15) / 15);
+    const maxWidth = Math.floor((width - 25) / 25);
+
+    return (
+      <>
+        {Array.from(
+          { length: 200 - Math.abs(Math.round(digitalCoff * 100)) },
+          () => Math.floor(Math.random() * 16777215).toString(16)
+        ).map((randomColor) => (
+          <div
+            key={randomColor}
+            className={styles.phone__line}
+            style={{
+              background: `#${randomColor}`,
+              opacity: Math.random(),
+              top: Math.round(Math.random() * maxHeight) * 15 + 4,
+              left: Math.round(Math.random() * maxWidth) * 25 + 8,
+              height: "15px",
+              width: "25px",
+            }}
+          ></div>
+        ))}
+      </>
+    );
+  }, [digitalCoff, height, width, signal.type]);
 
   return (
     <div className={[styles.phone, className].join(" ")}>
@@ -154,8 +194,8 @@ export const Phone = ({
                           imageType={image}
                           className={styles.phone__screen_image}
                           styles={{
-                            filter: `blur(${COEFFICIENT * 10}px) contrast(${
-                              COEFFICIENT * 20 < 1 ? 1 : expK * 20
+                            filter: `blur(${expK * 10}px) contrast(${
+                              expK * 20 < 1 ? 1 : expK * 20
                             }) brightness(${1 - expK})`,
                           }}
                         />
@@ -184,7 +224,7 @@ export const Phone = ({
                           imageType={image}
                           className={styles.phone__screen_image}
                           styles={{
-                            opacity: 1 - (COEFFICIENT < 0.01 ? 0 : expImpl),
+                            opacity: 1 - expImpl,
                           }}
                         />
                         <div ref={ref} className={styles.phone__noise}>
@@ -192,9 +232,9 @@ export const Phone = ({
                             className={styles.phone__impuls_image}
                             styles={{
                               filter: `contrast(${
-                                COEFFICIENT * 20 < 1 ? 1 : expK * 10
+                                expImpl * 10 < 1 ? 1 : expImpl * 10
                               })`,
-                              opacity: COEFFICIENT < 0.01 ? 0 : expImpl,
+                              opacity: expImpl,
                             }}
                             imageType="impulsNoise"
                           />
@@ -208,11 +248,7 @@ export const Phone = ({
                           imageType={image}
                           className={styles.phone__screen_image}
                           styles={{
-                            opacity:
-                              1 -
-                              (COEFFICIENT < 0.46
-                                ? COEFFICIENT / 5
-                                : COEFFICIENT * 1.5),
+                            opacity: 1 - expPeriod,
                           }}
                         />
                         {frqAvarage < lines ? (
@@ -220,10 +256,7 @@ export const Phone = ({
                             <Image
                               className={styles.phone__impuls_image}
                               styles={{
-                                opacity:
-                                  COEFFICIENT < 0.46
-                                    ? COEFFICIENT / 5
-                                    : COEFFICIENT,
+                                opacity: expPeriod,
                               }}
                               imageType="periodNoise"
                             />
@@ -233,10 +266,7 @@ export const Phone = ({
                             <Image
                               className={styles.phone__impuls_image}
                               styles={{
-                                opacity:
-                                  COEFFICIENT < 0.46
-                                    ? COEFFICIENT / 5
-                                    : COEFFICIENT,
+                                opacity: expPeriod,
                                 transform: `rotate(-${
                                   35 - (32 * lines) / frqAvarage
                                 }deg) scale(1.5)`,
@@ -251,32 +281,13 @@ export const Phone = ({
                 )}
                 {signal.type === "digital" && (
                   <>
-                    {typeof digitalCoff === "boolean" && (
-                      <Image
-                        imageType={image}
-                        className={styles.phone__screen_image}
-                        styles={{
-                          opacity: Number(digitalCoff),
-                        }}
-                      />
-                    )}
-                    {typeof digitalCoff === "undefined" && (
-                      <Image
-                        imageType={image}
-                        className={styles.phone__screen_image_animate}
-                      />
-                    )}
-                    {digitalCoff === false && (
-                      <div className={styles.phone__noise_dig}>
-                        <p className={styles.phone__noise_dig_text}>
-                          Нет сигнала
-                        </p>
-                        <p className={styles.phone__noise_dig_pretext}>
-                          Cигнал нижнего уровня после действия помехи больше,
-                          либо равен верхнему уровню логической единицы.
-                        </p>
-                      </div>
-                    )}
+                    <Image
+                      imageType={image}
+                      className={styles.phone__screen_image}
+                    />
+                    <div ref={ref} className={styles.phone__noise_dig}>
+                      {digLines}
+                    </div>
                   </>
                 )}
                 <div

@@ -1,5 +1,5 @@
 import { getFluctuationNoise, getImpulsNoise, getPeriodsNoise } from "./noise";
-import { getAnalogSignal, getDigitalSignal, ISignalCoords } from "./signal";
+import { getAnalogSignal, ISignalCoords } from "./signal";
 
 interface IFluctuationOutputProps {
   amountPoints: number;
@@ -14,6 +14,7 @@ interface IFluctuationOutputProps {
     minA: number;
     maxN: number;
   };
+  digitalCoords: ISignalCoords;
 }
 
 export const getFluctuationOutput = ({
@@ -21,6 +22,7 @@ export const getFluctuationOutput = ({
   noise,
   signal,
   signalType,
+  digitalCoords,
 }: IFluctuationOutputProps): ISignalCoords => {
   const signalProps = {
     amountPoints,
@@ -30,7 +32,7 @@ export const getFluctuationOutput = ({
   const signalPoints =
     signalType === "analog"
       ? getAnalogSignal(signalProps)
-      : getDigitalSignal(signalProps);
+      : digitalCoords;
   const noisePoints = getFluctuationNoise({ amountPoints, ...noise });
 
   return {
@@ -46,6 +48,7 @@ export const getImpulsOutput = ({
   noise,
   signal,
   signalType,
+  digitalCoords,
 }: IFluctuationOutputProps): ISignalCoords => {
   const signalProps = {
     amountPoints,
@@ -55,7 +58,7 @@ export const getImpulsOutput = ({
   const signalPoints =
     signalType === "analog"
       ? getAnalogSignal(signalProps)
-      : getDigitalSignal(signalProps);
+      : digitalCoords;
   const noisePoints = getImpulsNoise({ amountPoints, ...noise });
 
   return {
@@ -71,6 +74,7 @@ export const getPeriodOutput = ({
   noise,
   signal,
   signalType,
+  digitalCoords,
 }: IFluctuationOutputProps): ISignalCoords => {
   const signalProps = {
     amountPoints,
@@ -80,7 +84,7 @@ export const getPeriodOutput = ({
   const signalPoints =
     signalType === "analog"
       ? getAnalogSignal(signalProps)
-      : getDigitalSignal(signalProps);
+      : digitalCoords;
   const noisePoints = getPeriodsNoise({ amountPoints, ...noise });
 
   return {

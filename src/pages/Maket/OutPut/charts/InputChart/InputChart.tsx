@@ -1,4 +1,5 @@
 import { TooltipOptions } from "chart.js";
+// eslint-disable-next-line import/no-unresolved
 import { _DeepPartialObject } from "chart.js/types/utils";
 import { ReactElement } from "react";
 import { Line } from "react-chartjs-2";
@@ -10,7 +11,7 @@ interface IInputChartProps {
   signalCoords: IAnalogSignalData;
 }
 
-export const tooltip: _DeepPartialObject<TooltipOptions<"line">> =  {
+export const tooltip: _DeepPartialObject<TooltipOptions<"line">> = {
   callbacks: {
     title(data) {
       return `Временная точка: ${data[0].label} мкс`;
@@ -23,6 +24,22 @@ export const tooltip: _DeepPartialObject<TooltipOptions<"line">> =  {
         ",",
         "."
       )} В`;
+    },
+  },
+};
+
+export const tooltipDig: _DeepPartialObject<TooltipOptions<"line">> = {
+  callbacks: {
+    title() {
+      return ``;
+    },
+    label() {
+      return "";
+    },
+    footer(tooltipItems) {
+      return parseFloat(tooltipItems[0].formattedValue) === 0
+        ? "Логический 0"
+        : "Логическая 1";
     },
   },
 };
@@ -48,7 +65,7 @@ export const InputChart = ({
         responsive: true,
         maintainAspectRatio: true,
         interaction: {
-          intersect: false
+          intersect: false,
         },
         elements: {
           point: {

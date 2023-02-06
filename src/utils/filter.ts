@@ -9,7 +9,7 @@ export const getCoff = (
     return ampl - noise * 0.75 > 0 ? 0.2 : 1;
   }
   if (signalT === "analog" && noise / ampl < 0.2) {
-    return 0.1;
+    return 0.5;
   }
-  return 0.5;
+  return 0.6;
 };

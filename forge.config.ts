@@ -1,7 +1,9 @@
 import type { ForgeConfig } from "@electron-forge/shared-types";
 import { WebpackPlugin } from "@electron-forge/plugin-webpack";
+import path from "path";
 
 import { mainConfig } from "./webpack.main.config";
+
 // eslint-disable-next-line import/namespace
 import { rendererConfig } from "./webpack.renderer.config";
 import MakerSquirrel from "@electron-forge/maker-squirrel";
@@ -14,7 +16,11 @@ const config: ForgeConfig = {
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
-      noMsi: false,
+      noMsi: true,
+      fixUpPaths: true,
+      loadingGif: "./public/assets/loading.gif",
+      name: "lab.effect",
+      setupExe: "setup.exe",
     }),
     new ZipMaker({}),
   ],

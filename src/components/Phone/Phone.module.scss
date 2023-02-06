@@ -131,30 +131,14 @@ $phone-radius: 20px 20px 0px 0px;
   }
 
   &__noise_dig {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
     position: absolute;
     border-radius: $phone-radius;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-
-    &_text {
-      color: white;
-      font-size: 24px;
-      text-align: center;
-    }
-    &_pretext {
-      color: white;
-      font-size: 16px;
-      margin-top: 12px;
-      padding: 0 8px;
-      text-align: center;
-    }
   }
+
   &__screen_image_animate {
     position: absolute;
     top: 0;
@@ -164,6 +148,12 @@ $phone-radius: 20px 20px 0px 0px;
     border-radius: $phone-radius;
     height: 100%;
     animation: anim 50ms infinite;
+  }
+
+  &__line {
+    position: absolute;
+    width: 100%;
+    left: 0;
   }
 }
 

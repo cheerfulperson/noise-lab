@@ -75,6 +75,20 @@ export const OutPut = (): ReactElement => {
       {signal.type === "digital" && (
         <div className={styles.signal_settings__chart_block}>
           <div className={styles.signal_settings__chart}>
+            <div className={styles.label}>
+              {chartsData.digital.y
+                .reduce<Array<boolean>>((acc, curr, i, arr) => {
+                  if (i % 180 === 0 && arr[i - 90] !== undefined) {
+                    acc.push(!!arr[i - 90]);
+                  }
+                  return acc;
+                }, [])
+                .map((value, i) => (
+                  <div key={i} className={styles.label__block}>
+                    <span className={styles.label__text}>{Number(value)}</span>
+                  </div>
+                ))}
+            </div>
             <DigitalInputChart signalCoords={chartsData.digital} />
           </div>
           <div className={styles.signal_settings__chart}>
@@ -95,6 +109,20 @@ export const OutPut = (): ReactElement => {
             сигнала с высокого на низкий и наоборот.
           </Alert>
           <div className={styles.signal_settings__chart}>
+            <div className={[styles.label, styles.label__filter].join(" ")}>
+              {chartsData.filter.y
+                .reduce<Array<boolean>>((acc, curr, i, arr) => {
+                  if (i % 180 === 0 && arr[i - 90] !== undefined) {
+                    acc.push(!!arr[i - 90]);
+                  }
+                  return acc;
+                }, [])
+                .map((value, i) => (
+                  <div key={i} className={styles.label__block}>
+                    <span className={styles.label__text}>{Number(value)}</span>
+                  </div>
+                ))}
+            </div>
             <FilterChart signalCoords={chartsData.filter} />
           </div>
         </div>

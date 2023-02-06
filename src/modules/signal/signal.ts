@@ -17,24 +17,24 @@ interface ISignalProps {
   ampl?: number;
 }
 
+let pointNum = Math.random() > 0.5 ? 0 : 1;
+
 const getGarmonicPoint = (ampl: number, t: number): number => ampl * sin(t);
 
 const getSignalPoint = (t: number): number =>
   (sin(t) + sin(2 * t) + sin(3 * t)) / 2.5;
 
 const getDigitalPoint = (t: number): number => {
-  const value = sin((t / 180) * PI);
+  const value = Math.abs(Math.round(Math.sin(t / 180 * PI) * 100) / 100);
 
-  if ((value > 0 && value < 0.5) || (value < 0 && value > -0.5)) {
-    return 0;
+  if (value === 0) {
+    pointNum = Math.random() >= 0.5 ? 0 : 1;
+    if (pointNum === 1) {
+      return 0;
+    }
   }
-  if (value >= 0.5 && value <= 1) {
-    return 1;
-  }
-  if (value <= -0.5 && value >= -1) {
-    return 0.25;
-  }
-  return 0;
+
+  return pointNum;
 };
 
 export const getAnalogSignal = ({

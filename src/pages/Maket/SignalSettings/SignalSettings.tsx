@@ -186,9 +186,9 @@ export const SignalSettings = ({
           )}
           {type === "digital" && (
             <CustomAlert severity="info">
-              Уровень логичской 1 от {(ampl - ampl * 0.2).toFixed(2)} В до{" "}
-              {(+ampl + ampl * 0.2).toFixed(2)} В! Уровень логического 0 от 0 В
-              до {(ampl * 0.4).toFixed(2)} В
+              Уровень логичской 1 от {(ampl - ampl * 0.25).toFixed(2)} В до{" "}
+              {Number(ampl).toFixed(2)} В! Уровень логического 0 от 0 В до{" "}
+              {(ampl * 0.25).toFixed(2)} В
             </CustomAlert>
           )}
           <FormControl
@@ -221,7 +221,11 @@ export const SignalSettings = ({
           <div className={styles.signal_settings__input_block}>
             <TextField
               id="signal_settings_a"
-              label={type === "digital" ? "Значение логической 1" : "Максимальная амплитуда"}
+              label={
+                type === "digital"
+                  ? "Значение логической 1"
+                  : "Максимальная амплитуда"
+              }
               variant="outlined"
               color={formState.errors.ampl ? "error" : "info"}
               helperText={
@@ -243,7 +247,7 @@ export const SignalSettings = ({
           {}
         </div>
         <div className={styles.signal_settings__input_block}>
-          Частота сигнала 800 МГц
+          Средняя несущая частота сигнала равна 800 МГц
           {/* <TextField
               id="signal_settings_gz"
               label="Частота"

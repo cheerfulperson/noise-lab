@@ -113,7 +113,7 @@ export const initialMaketValues: IMaketState = {
   brightness: 50,
   pointsAmount: {
     analog: 1000,
-    digital: 1000,
+    digital: 1085,
     noise: 50,
   },
   signal: {
@@ -212,7 +212,9 @@ export const MaketProvider = ({
       noise: state.noise,
       signal: state.signal,
       signalType: state.signal.type,
+      digitalCoords: digitalCoords
     };
+
     if (state.noise.type === "fluct") {
       return getFluctuationOutput(settings);
     }
@@ -222,7 +224,7 @@ export const MaketProvider = ({
     }
 
     return getPeriodOutput(settings);
-  }, [state]);
+  }, [state, digitalCoords]);
 
   const filterCoords = useMemo(() => {
     const k = getCoff(state.signal.type, state.signal.ampl, state.noise.maxN);
@@ -244,13 +246,13 @@ export const MaketProvider = ({
       noise: noiseData,
       signal: state.signal,
       signalType: state.signal.type,
+      digitalCoords,
     };
 
-    if (k === 1) {
+    if (k === 1 && state.signal.type === "digital") {
       return getDigitalSignal({
         amountPoints: state.pointsAmount.digital,
         ...state.signal,
-        ampl: 0,
       });
     }
 
@@ -263,7 +265,7 @@ export const MaketProvider = ({
     }
 
     return getPeriodOutput(settings);
-  }, [state]);
+  }, [state, digitalCoords]);
 
   const cartContextValue: IUseMaketResults = {
     ...state,

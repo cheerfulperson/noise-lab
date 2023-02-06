@@ -5,7 +5,7 @@ import { Line } from "react-chartjs-2";
 // eslint-disable-next-line import/no-unresolved
 import { useMaketContext } from "../../../../../context";
 import { ISignalCoords } from "../../../../../modules/signal/signal";
-import { tooltip } from "../InputChart";
+import { tooltipDig, tooltip } from "../InputChart";
 
 interface IDigitalInputChartProps {
   signalCoords: ISignalCoords;
@@ -14,14 +14,22 @@ interface IDigitalInputChartProps {
 export const FilterChart = ({
   signalCoords,
 }: IDigitalInputChartProps): ReactElement => {
-  const { signal } = useMaketContext();
+  const { signal, chartsData } = useMaketContext();
 
   const datasets = useMemo(() => {
     if (signal.type === "digital") {
-      const logZero = signal.ampl * 0.4;
-      const max = signal.ampl + signal.ampl * 0.2;
-      const min = signal.ampl - signal.ampl * 0.2;
+      const logZero = signal.ampl * 0.25;
+      const max = signal.ampl;
+      const min = signal.ampl - signal.ampl * 0.25;
       return [
+        {
+          label: "Исходный сигнал",
+          data: chartsData.digital.y,
+          borderColor: "rgb(0 0 0)",
+          backgroundColor: "rgb(0 0 0)",
+          borderDash: [5, 5],
+          fill: false,
+        },
         {
           label: "Логический 0",
           data: signalCoords.y.map(() => logZero),
@@ -35,6 +43,9 @@ export const FilterChart = ({
           borderColor: "#e2e61763",
           backgroundColor: "#e2e61763",
           fill: "-1",
+        },
+        {
+          data: [Math.max(...signalCoords.y) * 1.2],
         },
         {
           label: "Логическая 1",
@@ -53,13 +64,13 @@ export const FilterChart = ({
       ];
     }
     return [];
-  }, [signal, signalCoords]);
+  }, [signal, signalCoords, chartsData]);
 
   const dataSignal = {
     labels: signalCoords.x,
     datasets: [
       {
-        label: "Сигнал",
+        label: "Сигнал после действия фильтра",
         fill: false,
         data: signalCoords.y,
         borderColor: "rgb(255, 79, 132)",
@@ -74,7 +85,7 @@ export const FilterChart = ({
       options={{
         responsive: true,
         interaction: {
-          intersect: false
+          intersect: false,
         },
         elements: {
           point: {
@@ -95,6 +106,7 @@ export const FilterChart = ({
             },
           },
           x: {
+            display: signal.type !== 'digital',
             title: {
               display: true,
               text: "t, мкс",
@@ -108,16 +120,17 @@ export const FilterChart = ({
           },
         },
         plugins: {
-          tooltip: tooltip,
+          tooltip: signal.type === "digital" ? tooltipDig : tooltip,
           legend: {
-            display: signal.type === 'digital',
+            display: signal.type === "digital",
             position: "top" as const,
             labels: {
               generateLabels: (chart) =>
                 chart.data.datasets
                   .filter(
                     (value, i, arr) =>
-                      i === arr.findIndex((el) => value.label === el.label)
+                      i === arr.findIndex((el) => value.label === el.label) &&
+                      value.label
                   )
                   .map(
                     (item, i): LegendItem => ({

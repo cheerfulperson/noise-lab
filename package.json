@@ -5,9 +5,11 @@
   "description": "Electron App",
   "main": ".webpack/main",
   "scripts": {
+    "start:react": "react-scripts start",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make --skip-package",
+    "make": "electron-forge make",
+    "make:skip": "electron-forge make --skip-package",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
@@ -71,5 +73,17 @@
     "react-router": "^6.4.3",
     "react-router-dom": "^6.4.3",
     "zod": "^3.19.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
